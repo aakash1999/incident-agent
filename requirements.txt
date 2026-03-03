@@ -1,0 +1,7 @@
+pydantic-ai
+fasta2a
+fastapi
+uvicorn
+mangum
+boto3
+httpx
