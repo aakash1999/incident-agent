@@ -11,10 +11,22 @@ source myenv/bin/activate
 
 Pip3 install -r requirements.txt
 
-2. Run the app
+2. Configure AWS + create resources
+- Make sure your AWS credentials and region are configured (Bedrock + DynamoDB + SNS permissions).
+- Create a DynamoDB table (partition key: `incident_id`):
+  `aws dynamodb create-table --table-name IncidentTable --attribute-definitions AttributeName=incident_id,AttributeType=S --key-schema AttributeName=incident_id,KeyType=HASH --billing-mode PAY_PER_REQUEST`
+- Create an SNS topic and subscribe your email:
+  `aws sns create-topic --name incident-notifications`
+  `aws sns subscribe --topic-arn <TOPIC_ARN> --protocol email --notification-endpoint you@example.com`
+  (Confirm the subscription from your email.)
+- Export env vars used by the tools:
+  `export INCIDENTS_TABLE_NAME="IncidentTable"`
+  `export INCIDENTS_TOPIC_ARN="<TOPIC_ARN>"`
+
+3. Run the app
 uvicorn app:app --host 0.0.0.0 --port 8000
 
-3. Test the agent:
+4. Test the agent:
 Agent Card:
 postman request 'http://localhost:8000/.well-known/agent-card.json'
 
